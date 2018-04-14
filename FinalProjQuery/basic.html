@@ -1,0 +1,252 @@
+<!DOCTYPE HTML>
+<!--
+/*
+ * jQuery File Upload Plugin Basic Demo
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ */
+-->
+<html lang="en">
+<head>
+<!-- Force latest IE rendering engine or ChromeFrame if installed -->
+<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+<meta charset="utf-8">
+<title>Book Cover Judger</title>
+<meta name="description" content="Webapp to make prediction on Amazon rating based on cover">
+<!-- Bootstrap styles -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- Generic page styles -->
+<link rel="stylesheet" href="css/style.css">
+<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+<link rel="stylesheet" href="css/jquery.fileupload.css">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<style>
+    .navbar-default {
+    background-color: #232f3e;
+}
+.navbar-default .navbar-brand {
+    color: #fff;
+}
+.navbar-default .navbar-nav>li>a {
+    color: #ccc;
+}
+.btn-success {
+    color: #333;
+    background-color: #f0c14b;
+    border: #333 1px solid;
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: ubuntu;
+    font-weight: 700;
+    line-height: 1.1;
+    color: inherit;
+}
+blockquote ol:last-child, blockquote p:last-child, blockquote ul:last-child {
+    margin-bottom: 0;
+    color: rgb(226, 121, 38);
+}
+.a-hires .a-icon, .a-hires .a-link-emphasis:after {
+    background-image: url(https://m.media-amazon.com/images/G/01/AUIClients/AmazonUIBaseCSS-sprite_2x-01a4947…._V2_.png);
+}
+</style>
+</head>
+<body>
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-fixed-top .navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Book Cover Judger</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#">Data</a></li>
+                <li><a href="#">Source Code</a></li>
+                <li><a href="#">Slides</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h1>Book Cover Judger</h1>
+    <h2 class="lead">Version 1.0 - A Machine Learning Look at Book Cover Importance</h2>
+    <p>Can you judge a book by its cover? Or how it might perform in Amazon reviews?</p>
+    <p>Let's see if we can use Machine Learning to find out.</p>
+    <p>We set out to create a ML model for the best and worst Amazon reviewed books and their covers. This site allows you to upload a book cover image, which is then processed and tagged through the GoogleVisionAPI, run through the model, and then receives predicted performance metrics based on previous Amazon reviews.</p>
+    <br>
+    <blockquote>
+        <p>Upload up to 4 files and we'll make a prediction of its Amazon rating.</p>
+    </blockquote>
+    <br>
+    <!-- The fileinput-button span is used to style the file input field as button -->
+    <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Select file(s)...</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="fileupload" type="file" name="files[]" multiple>
+    </span>
+    <br>
+    <br>
+    <!-- The global progress bar -->
+    <div id="progress" class="progress">
+        <div class="progress-bar progress-bar-success"></div>
+    </div>
+    <!-- The container for the uploaded files -->
+    <div id="files" class="files"></div>
+    <br>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Demo Notes</h3>
+        </div>
+        <div class="panel-body">
+                <input type="checkbox" name="offeringID.2" value="" checked="" style="display: inline-block;"><i class="a-icon a-icon-checkbox"></i>      The maximum file size for uploads in this demo is <strong>999 KB</strong> (default file size is unlimited).
+                <br>
+                <input type="checkbox" name="offeringID.2" value="" checked="" style="display: inline-block;"><i class="a-icon a-icon-checkbox"></i>      Only image files (<strong>JPG, GIF, PNG</strong>)<em>are allowed in this demo (by default there is no file type restriction).</em>
+                <br>
+                <input type="checkbox" name="offeringID.2" value="" checked="" style="display: inline-block;"><i class="a-icon a-icon-checkbox"></i>      Uploaded files will be deleted automatically after <strong>5 minutes or less</strong>
+                <br>
+        </div>
+    </div>
+    <!-- Start Body -->
+    <hr>
+    
+    <div class="row">
+      <div classs="col-md-12 text-center"><h2>View Your Results</h2></div>
+    </div>
+    
+    <hr>
+
+    <div class="row">  
+      <div class="col-md-6">
+        <img src="./img/pikachuPORTAL.jpg">
+      </div>
+      <div class="col-md-6">
+        <h4>Predicted Scores</h4>
+        <h2>4.5 Stars | Good</h2>
+        <hr>
+          <h4><strong>Labels:</strong></h4>
+            <ul>
+              <li>Sky</li><li>Spain</li><li>Architecture</li>
+            </ul>
+          <h4>Topicality:</h4>
+            <ul>
+              <li>Sky</li><li>Pokemon</li><li>Blue</li>
+            </ul>
+          <h4>Text:</h5>
+            <ul>
+              <li>Pikachu</li><li>Novel</li><li>Pandas</li>
+            </ul>
+          <h4>Other:</h4>
+            <ul>
+              <li>Blah</li><li>Blah</li><li>Blah</li>
+            </ul>
+      </div>
+    </div>
+<hr>
+    <div class="row">  
+            <div class="col-md-6">
+              <img src="./img/SpaceCamel.jpg">
+            </div>
+            <div class="col-md-6">
+              <h4>Predicted Scores</h4>
+              <h2>1.5 Stars | Bad</h2>
+              <hr>
+                <h4><strong>Labels:</strong></h4>
+                  <ul>
+                    <li>Space</li><li>Satellite</li><li>Atmosphere</li>
+                  </ul>
+                <h4>Topicality:</h4>
+                  <ul>
+                    <li>Space</li><li>Night</li><li>Blue</li>
+                  </ul>
+                <h4>Text:</h5>
+                  <ul>
+                    <li>Super</li><li>Space</li><li>Camel</li>
+                  </ul>
+                <h4>Other:</h4>
+                  <ul>
+                    <li>Number 1 Book</li><li>Night</li><li>Blue</li>
+                  </ul>
+            </div>
+    </div>
+    <hr>
+    <div class="row">  
+            <div class="col-md-6">
+              <img src="./img/AwesomeTeacher.jpg">
+            </div>
+            <div class="col-md-6">
+              <h4>Predicted Scores</h4>
+              <h2>5 Stars | Very Good </h2>
+              <hr>
+                <h4><strong>Labels:</strong></h4>
+                  <ul>
+                    <li>Data</li><li>Programming</li><li>Blah</li>
+                  </ul>
+                <h4>Topicality:</h4>
+                  <ul>
+                    <li>Blah</li><li>Data</li><li>42</li>
+                  </ul>
+                <h4>Text:</h5>
+                  <ul>
+                    <li>Teach</li><li>Awesome</li><li>Group</li>
+                  </ul>
+                <h4>Other:</h4>
+                  <ul>
+                    <li>Thank</li><li>You</li><li>Julien</li>
+                  </ul>
+            </div>
+    </div>
+
+    </div>
+    
+        
+    </div>
+    </div>
+    <hr>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="js/jquery.fileupload.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = window.location.hostname === 'blueimp.github.io' ?
+                '//jquery-file-upload.appspot.com/' : 'server/php/';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                $('<p/>').text(file.name).appendTo('#files');
+            });
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .progress-bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    }).prop('disabled', !$.support.fileInput)
+        .parent().addClass($.support.fileInput ? undefined : 'disabled');
+});
+</script>
+</body>
+</html>
